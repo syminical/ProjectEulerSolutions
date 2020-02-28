@@ -12,8 +12,7 @@
 				       remem
 				       (+ f-val p-val)))))))
                      
-;;;Display sum of even values from key/value pairs in hash-table
-;;; from #'fib-lst.
+;;;Display sum of even values from key/value pairs in hash-table from #'fib-lst.
 (format t "~a" (reduce #'+ 
 		 (remove-if #'oddp 
                    (loop for val
