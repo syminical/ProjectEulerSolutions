@@ -1,6 +1,7 @@
 #Problem 3 - Largest Prime Factor
 ```lisp
 ;;;;Compile #'factors for tail-recursion optimization to avoid stack overflow.
+
 ;;;Return T if n is prime, nil otherwise.
 (defun primep (n)
   (if (and (evenp n) (not (= 2 n)))
@@ -22,8 +23,7 @@
           (factors n (1- m) (cons a (cons m ans))))
 	(factors n (1- m) ans)))))
 
-;;;Return the max value of the list of primes generated from the list
-;;; of factors of the target.
+;;;Return the max value of the list of primes generated from the list of factors of the target.
 (defun run-test ()
   (apply #'max (remove-if (complement #'primep) (factors 600851475143))))
 ```
