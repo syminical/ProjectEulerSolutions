@@ -7,8 +7,7 @@
       t
       (multp i (cdr lst)))))
       
-;;; Return list of multiples in the range [i, n] of numbers in lst.
-;;;  i = 1 by default.
+;;; Return list of multiples in the range [i, n] of numbers in lst. i = 1 by default.
 (defun mults-of-lst (lst n &optional (i 1) ans)
   (if (> i n)
     ans
