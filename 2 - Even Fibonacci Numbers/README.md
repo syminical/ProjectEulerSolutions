@@ -1,6 +1,6 @@
-#Problem 2 - Even Fibonacci Nums
+# Problem 2 - Even Fibonacci Nums
 I have two solutions for this problem. The one that got me the answer, and then a better one I put together after reading posts in the solutions thread. :)
-####My initial solution:
+#### My initial solution:
 ```clojure
 ;;;Returns a hash table with the values of fib in the range (1, n).
 (defun fib-lst (n &optional (i 0) (mem (make-hash-table)) (f-val 0) (p-val 0))
@@ -26,7 +26,7 @@ I have two solutions for this problem. The one that got me the answer, and then 
 ```
 
 
-####Better, math based, solution (see Begoner's post):
+#### Better, math based, solution (see Begoner's post):
 ```clojure
 (defun fib-sum-even-under-n (n &optional (x 1) (y 1) (ans 0))
   (let ((z (+ x y)))
