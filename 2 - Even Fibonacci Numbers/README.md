@@ -1,33 +1,31 @@
 # Problem 2 - Even Fibonacci Nums
 I have two solutions for this problem. The one that got me the answer, and then a better one I put together after reading posts in the solutions thread. :)
 #### My initial solution:
-```clojure
+```lisp
 ;;;Returns a hash table with the values of fib in the range (1, n).
-(defun fib-lst (n &optional (i 0) (mem (make-hash-table)) (f-val 0) (p-val 0))
+(defun fib-lst (n &optional (i 0) (mem (make-hash-table)) (far-val 0) (prv-val 0))
   (cond
-    ((>= p-val n) (remhash (1- i) mem) mem)
+    ((>= prv-val n) (remhash (1- i) mem) mem)
     ((zerop i) (progn
                  (setf (gethash i mem) 1)
-		         (fib-lst n (1+ i) mem 1 1)))
+		 (fib-lst n (1+ i) mem 1 1)))
     (t (multiple-value-bind (remem known) (nth-value 1 (gethash i mem))
- 	     (unless known
-  	     (setf (gethash i mem) (+ f-val p-val)))
-      	 (fib-lst n (1+ i) mem p-val (if known
-			 	 	                   remem
-					                   (+ f-val p-val)))))))
+ 	 (unless known
+  	 (setf (gethash i mem) (+ far-val prv-val)))
+      	 (fib-lst n (1+ i) mem prv-val (if known
+			 	         remem
+				         (+ far-val prv-val)))))))
                      
-;;;Display sum of even values from key/value pairs in hash-table
-;;; from #'fib-lst.
+;;;Display sum of even values from key/value pairs in hash-table from #'fib-lst.
 (format t "~a" (reduce #'+ 
-		         (remove-if #'oddp 
+		 (remove-if #'oddp 
                    (loop for val
- 		             being the hash-values of (fib-lst 4000000)
-		               collect val))))
+ 		     being the hash-values of (fib-lst 4000000)
+		       collect val))))
 ```
 
-
 #### Better, math based, solution (see Begoner's post):
-```clojure
+```lisp
 (defun fib-sum-even-under-n (n &optional (x 1) (y 1) (ans 0))
   (let ((z (+ x y)))
     (if (>= z n)
