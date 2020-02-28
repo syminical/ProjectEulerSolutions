@@ -1,0 +1,79 @@
+#|#|
+(defun fib-lst (n &optional (i 0) far-val (mem (make-hash-table)) (ans 0))
+  (cond
+    ((= i n) ans)
+    ((zerop i) (fib-lst n (1+ i) 0 mem '(1)))
+    (t (multiple-value-bind (remem known) (nth-value 1 (gethash i mem))
+	 (fib-lst n (1+ i) (car ans) mem
+	   (if known
+	     (cons remem ans)
+	     (cons (setf (gethash i mem) (+ far-val (car ans))) ans)))))))
+|#
+
+(defun fib-lst (n &optional (i 0) (mem (make-hash-table)) (far-val 0) (prv-val 0))
+  (cond
+    ((>= prv-val n) (remhash (1- i) mem) mem)
+    ((zerop i) (progn
+		 (setf (gethash i mem) 1)
+		 (fib-lst n (1+ i) mem 1 1)))
+    (t (multiple-value-bind (remem known) (nth-value 1 (gethash i mem))
+ 	 (unless known
+  	   (setf (gethash i mem) (+ far-val prv-val)))
+      	 (fib-lst n (1+ i) mem prv-val (if known
+			 	 	 remem
+					 (+ far-val prv-val)))))))
+
+;;;;using Begoner's explanation (Thread pg. 1)
+(defun fib-sum-even-under-n (n &optional x y (ans 0))
+  (if (not (and x y))
+    (fib-sum-even-under-n n 1 1 ans)
+    (let ((z (+ x y)))
+      (if (>= z n)
+        ans
+      	(fib-sum-even-under-n n (+ x (* 2 y)) (+ (* 2 x) (* 3 y)) (+ ans z))))))
+
+(format t "~a~%" (fib-sum-even 4000000))
+(format t "~a~%" (fib-sum-even-under-n 4000000))
+
+;;;(defparameter a '#S(HASH-TABLE :TEST FASTHASH-EQL (5 . 8) (4 . 5) (3 . 3) (2 . 2) (1 . 1)))
+;;;(defun hash-keys (hash-table)
+  (loop for key being the hash-keys of hash-table collect key))
+;;;(defun hash-vals (ht) (loop for val being the hash-values of ht collect val))
+;;;http://fare.tunes.org/files/fun/fibonacci.lisp
+|#
+
+My programming solution:
+[code=LISP];;;Returns a hash table with the values of fib in the range (1, n).
+(defun fib-lst (n &optional (i 0) (mem (make-hash-table)) (far-val 0) (prv-val 0))
+  (cond
+    ((>= prv-val n) (remhash (1- i) mem) mem)
+    ((zerop i) (progn
+		 (setf (gethash i mem) 1)
+		 (fib-lst n (1+ i) mem 1 1)))
+    (t (multiple-value-bind (remem known) (nth-value 1 (gethash i mem))
+ 	 (unless known
+  	   (setf (gethash i mem) (+ far-val prv-val)))
+      	 (fib-lst n (1+ i) mem prv-val (if known
+			 	 	 remem
+					 (+ far-val prv-val)))))))
+
+;;;Display sum of even values from key/value pairs in hash-table from #'fib-lst.
+(format t "~a" (reduce #'+ 
+		   (remove-if #'oddp 
+                     (loop for val
+ 		       being the hash-values of (fib-lst 4000000)
+		         collect val))))
+[/code]
+Better, math based, solution (see Begoner's post):
+[code=LISP](defun fib-sum-even-under-n (n &optional (x 1) (y 1) (ans 0))
+  (let ((z (+ x y)))
+    (if (>= z n)
+      ans
+      (fib-sum-even-under-n n (+ x (* 2 y)) (+ (* 2 x) (* 3 y)) (+ ans z)))))
+
+(format t "~a" (fib-sum-even-under-n 4000000))
+[/code]
+(pg.1) [b]Begoner[/b] said
+[quote]...each third number is even. We don't need to calculate the odd numbers.
+Starting from an[y] two odd terms x, y, the series is: [r]x[/r], [r]y[/r], [g][b]x + y[/b][/g], [r]x + 2y[/r], [r]2x + 3y[/r], [g][b]3x + 5y[/b][/g]
+[/quote]

@@ -1,0 +1,40 @@
+#|
+;;;;I wanted some smarter way, but I'm not good enough yet.
+(defun factors (n &optional (m (floor (sqrt n))) (no2s 0) (echo 0) ans)
+  (if (= 1 m)
+    (if (zerop no2s) ans
+      (factors n m (1- no2s) (1+ echo) (cons (ash 2 echo) ans)))
+    (if (evenp n)
+      (let ((_ (ash n -1)))
+        (factors _ (floor (sqrt _)) (1+ no2s) echo (cons _ ans)))
+      (multiple-value-bind (a b) (floor n m)
+        (if (zerop b)
+	  (factors n (1- m) no2s echo (cons a (cons m ans)))
+          (factors n (1- m) no2s echo ans))))))
+|#
+
+;;;;Compile #'factors for tail-recursion optimization to avoid stack overflow.
+;;;Return T if n is prime, nil otherwise.
+(defun primep (n)
+  (if (and (evenp n) (not (= 2 n)))
+    nil
+    (let ((m (floor (sqrt n))))
+      (loop
+	(when (zerop (mod n m)) (return nil))
+	(decf m)
+  	(when (= 1 m) (return t))))))
+
+;;;Return a list of factors of n in the range (1, n).
+(defun factors (n &optional (m (floor (sqrt n))) ans)
+  (if (= 1 m)
+    ans
+    (multiple-value-bind (a b) (floor n m)
+      (if (zerop b)
+        (if (= m a)
+          (factors n (1- m) (cons m ans))
+          (factors n (1- m) (cons a (cons m ans))))
+	(factors n (1- m) ans)))))
+
+;;;Return the max value of the list of primes generated from the list of factors of the target.
+(defun run-test ()
+  (apply #'max (remove-if (complement #'primep) (factors 600851475143))))
