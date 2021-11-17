@@ -1,4 +1,4 @@
-# ![Image of Project Euler Logo](https://projecteuler.net/themes/20200107/logo_default.png) Read below first!
+# [![Image of Project Euler Logo](https://projecteuler.net/themes/logo_default.png)](https://projecteuler.net) Read below first!
 Please consider solving the problems yourself **before** looking at my solutions. --- [Project Euler](https://projecteuler.net)
 
 This is a collection of my code, written to solve problems on ProjectEuler.net .
